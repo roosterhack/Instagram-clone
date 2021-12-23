@@ -16,7 +16,7 @@ export const MiniProfile = () => {
       </div>
       <button
         className="text-blue-400 text-sm font-semibold"
-        onClick={signOut as any}
+        onClick={signOut as () => void}
       >
         Sign out
       </button>

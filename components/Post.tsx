@@ -31,7 +31,7 @@ interface PostProps {
   caption: string;
 }
 
-export const Post = ({ post }: { post: PostProps }) => {
+export const Post = ({ post }: any) => {
   const { data: session } = useSession();
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState<any[] | null>([]);
