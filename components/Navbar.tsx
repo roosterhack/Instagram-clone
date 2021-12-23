@@ -7,13 +7,24 @@ import {
   HeartIcon,
 } from "@heroicons/react/outline";
 import { HomeIcon, MenuIcon } from "@heroicons/react/solid";
+import { useSession, signIn, signOut } from "next-auth/react";
+import { useRouter } from "next/router";
+import { useRecoilState } from "recoil";
+import { modalState } from "../atoms/modalAtom";
 
 export const Navbar = () => {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [open, setOpen] = useRecoilState(modalState);
+
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
       <div className="flex justify-between max-w-6xl mx-5 xl:mx-auto">
         {/* logo */}
-        <div className="relative w-24 hidden lg:inline-grid">
+        <div
+          className="relative w-24 hidden lg:inline-grid"
+          onClick={() => router.push("/")}
+        >
           <Image
             src="https://links.papareact.com/ocw"
             layout="fill"
@@ -21,7 +32,10 @@ export const Navbar = () => {
           />
         </div>
 
-        <div className="relative w-10 lg:hidden cursor-pointer flex-shrink-0">
+        <div
+          className="relative w-10 lg:hidden cursor-pointer flex-shrink-0"
+          onClick={() => router.push("/")}
+        >
           <Image
             src="https://links.papareact.com/jjm"
             layout="fill"
@@ -43,23 +57,35 @@ export const Navbar = () => {
         </div>
 
         {/* nav */}
+
         <div className="flex justify-end items-center space-x-4">
-          <HomeIcon className="navButton" />
-          <MenuIcon className="md:hidden h-6 cursor-pointer" />
-          <div className="relative navButton">
-            <PaperAirplaneIcon className="navButton" />
-            <div className="absolute -top-2 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white animate-pulse">
-              2
-            </div>
-          </div>
-          <PlusCircleIcon className="navButton" />
-          <UserGroupIcon className="navButton" />
-          <HeartIcon className="navButton" />
-          <img
-            src="http://eddiechungdesign.com/wp-content/uploads/2018/02/self-portrait-small2.png"
-            alt="profile pic"
-            className="rounded-full cursor-pointer h-10"
-          />
+          <HomeIcon className="navButton" onClick={() => router.push("/")} />
+          {session ? (
+            <>
+              <MenuIcon className="md:hidden h-6 cursor-pointer" />
+              <div className="relative navButton">
+                <PaperAirplaneIcon className="navButton" />
+                <div className="absolute -top-2 -right-1 text-xs w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white animate-pulse">
+                  2
+                </div>
+              </div>
+              <PlusCircleIcon
+                className="navButton"
+                onClick={() => setOpen(true)}
+              />
+              <UserGroupIcon className="navButton" />
+              <HeartIcon className="navButton" />
+
+              <img
+                onClick={signOut as any}
+                src={session?.user?.image}
+                alt="profile pic"
+                className="rounded-full cursor-pointer h-10 w-10"
+              />
+            </>
+          ) : (
+            <button onClick={signIn as any}>Sign in</button>
+          )}
         </div>
       </div>
     </div>
