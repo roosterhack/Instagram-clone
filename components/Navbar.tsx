@@ -77,14 +77,14 @@ export const Navbar = () => {
               <HeartIcon className="navButton" />
 
               <img
-                onClick={signOut as any}
+                onClick={signOut as () => void}
                 src={session?.user?.image}
                 alt="profile pic"
                 className="rounded-full cursor-pointer h-10 w-10"
               />
             </>
           ) : (
-            <button onClick={signIn as any}>Sign in</button>
+            <button onClick={signIn as () => void}>Sign in</button>
           )}
         </div>
       </div>
