@@ -22,6 +22,7 @@ import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Moment from "react-moment";
 import { db } from "../firebase";
+import { PopoverMenu } from "./Popover";
 
 interface PostProps {
   id: string;
@@ -80,8 +81,6 @@ export const Post = ({ post }: any) => {
     const commentToSend = comment;
     setComment("");
 
-    console.log(post.data().id);
-
     await addDoc(collection(db, "posts", post.id, "comments"), {
       comment: commentToSend,
       username: session.user.username,
@@ -100,7 +99,8 @@ export const Post = ({ post }: any) => {
           alt={post.data().username}
         />
         <p className="flex-1 font-bold">{post.data().username}</p>
-        <DotsHorizontalIcon className="h-5" />
+        {/* <DotsHorizontalIcon className="h-5" /> */}
+        <PopoverMenu postId={post.id} />
       </div>
       {/* img */}
       <img src={post.data().image} alt="" className="object-contain w-full" />

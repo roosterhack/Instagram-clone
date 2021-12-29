@@ -4,7 +4,7 @@ import { Posts } from "./Posts";
 import { Stories } from "./Stories";
 import { Suggestions } from "./Suggestions";
 
-export const Feed = () => {
+export const Feed = ({ filteredPosts }) => {
   const { data: session } = useSession();
 
   return (
@@ -18,7 +18,7 @@ export const Feed = () => {
         {/* Stories */}
         <Stories />
 
-        <Posts />
+        <Posts filteredPosts={filteredPosts} />
       </section>
       {/* Section */}
       {session && (

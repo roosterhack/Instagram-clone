@@ -14,7 +14,6 @@ export const Stories = () => {
       id: i,
     }));
     setSuggestions(suggestions);
-    console.log(suggestions);
   }, []);
 
   return (

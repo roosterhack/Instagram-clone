@@ -14,23 +14,24 @@ import { db, storage } from "../firebase";
 import { useSession } from "next-auth/react";
 import { getDownloadURL, ref, uploadString } from "firebase/storage";
 
-export const Modal = () => {
+export const PostModal = () => {
   const [open, setOpen] = useRecoilState(modalState);
   const filePickerRef = useRef(null);
-  const captionRef = useRef(null);
+  const [caption, setCaption] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const { data: session } = useSession();
+  const notReady = !selectedFile || !caption;
 
   const uploadPost = async () => {
-    if (loading) return;
+    if (loading || notReady) return;
 
     setLoading(true);
 
     //Create a post and add to firestore 'posts' collection
     const docRef = await addDoc(collection(db, "posts"), {
       username: session.user.username,
-      caption: captionRef.current.value,
+      caption,
       profileImg: session.user?.image,
       timestamp: serverTimestamp(),
     });
@@ -51,6 +52,7 @@ export const Modal = () => {
     setOpen(false);
     setLoading(false);
     setSelectedFile(null);
+    setCaption(null);
   };
 
   const addImageToPost = (e: any) => {
@@ -147,18 +149,19 @@ export const Modal = () => {
                   type="text"
                   className="border-none focus:ring-0 w-full text-center"
                   placeholder="Please enter a caption..."
-                  ref={captionRef}
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
                 />
               </div>
 
               <div className="mt-5 sm:mt-6">
                 <button
-                  disabled={loading}
+                  disabled={loading || notReady}
                   type="button"
-                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500 w-full"
+                  className="inline-flex justify-center px-4 py-2 text-sm font-medium text-white bg-red-500 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-red-500 w-full disabled:opacity-20"
                   onClick={uploadPost}
                 >
-                  {loading ? "loading..." : "Upload Post"}
+                  {loading ? <div className="loader"></div> : "Upload Post"}
                 </button>
               </div>
             </div>

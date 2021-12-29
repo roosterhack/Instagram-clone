@@ -11,11 +11,22 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useRecoilState } from "recoil";
 import { modalState } from "../atoms/modalAtom";
+import { useState } from "react";
 
-export const Navbar = () => {
+export const Navbar = ({ setFilteredPosts, posts }) => {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [open, setOpen] = useRecoilState(modalState);
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+
+    const filtered = posts.filter((post) =>
+      post.data().caption.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredPosts(filtered);
+  };
 
   return (
     <div className="shadow-sm border-b bg-white sticky top-0 z-50">
@@ -52,6 +63,8 @@ export const Navbar = () => {
               className="bg-gray-50 block w-full pl-10 sm:text-sm rounded-md border-gray focus:border-black focus:ring-black border-gray-300"
               type="text"
               placeholder="Search"
+              value={searchTerm}
+              onChange={handleSearch}
             />
           </div>
         </div>
